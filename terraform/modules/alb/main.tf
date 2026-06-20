@@ -5,7 +5,7 @@ locals {
 # ---------- ALB Security Group ----------
 resource "aws_security_group" "alb" {
   name        = "${local.name_prefix}-alb-sg"
-  description = "Security group for ALB — allows HTTP from everywhere"
+  description = "Security group for ALB - allows HTTP from everywhere"
   vpc_id      = var.vpc_id
 
   ingress {
