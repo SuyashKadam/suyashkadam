@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Portfolio | Suyash Kadam</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-bracket">&lt;</span>
+                <span class="logo-text">SK</span>
+                <span class="logo-bracket">/&gt;</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-cta">
+                <a href="#contact" class="btn-primary">Hire Me</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg">
+            <div class="grid-overlay"></div>
+            <div class="floating-particles" id="particles"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-circle pulse-green"></i>
+                Available for opportunities
+            </div>
+            <h1 class="hero-title">
+                Hi, I'm <span class="gradient-text">Suyash Kadam</span>
+            </h1>
+            <h2 class="hero-subtitle">
+                <span class="typed-text" id="typed"></span><span class="cursor">|</span>
+            </h2>
+            <p class="hero-description">
+                Building scalable, resilient cloud infrastructure with modern DevOps practices.
+                Automating everything from code to production with zero downtime deployments.
+            </p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">99.9%</span>
+                    <span class="stat-label">Uptime SLA</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number">50%</span>
+                    <span class="stat-label">Cost Reduction</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number">&lt;5min</span>
+                    <span class="stat-label">Deploy Time</span>
+                </div>
+            </div>
+            <div class="hero-buttons">
+                <a href="#architecture" class="btn-primary">
+                    <i class="fas fa-server"></i> View Architecture
+                </a>
+                <a href="#contact" class="btn-secondary">
+                    <i class="fas fa-paper-plane"></i> Get In Touch
+                </a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">pipeline.sh</span>
+                </div>
+                <div class="terminal-body" id="terminal-body">
+                    <div class="term-line"><span class="prompt">$</span> <span class="cmd">terraform init</span></div>
+                    <div class="term-line success">✓ Terraform initialized successfully</div>
+                    <div class="term-line"><span class="prompt">$</span> <span class="cmd">terraform plan -out=tfplan</span></div>
+                    <div class="term-line info">Plan: 47 to add, 0 to change, 0 to destroy.</div>
+                    <div class="term-line"><span class="prompt">$</span> <span class="cmd">terraform apply tfplan</span></div>
+                    <div class="term-line success">✓ ECS Cluster created</div>
+                    <div class="term-line success">✓ ALB provisioned</div>
+                    <div class="term-line success">✓ CloudFront distribution active</div>
+                    <div class="term-line success">✓ WAF rules applied</div>
+                    <div class="term-line highlight">Apply complete! 47 resources added.</div>
+                    <div class="term-line"><span class="prompt">$</span> <span class="cmd blink">_</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">About Me</span>
+                <h2>Architecting the Future of <span class="gradient-text">Cloud Infrastructure</span></h2>
+            </div>
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="about-icon"><i class="fas fa-cloud"></i></div>
+                    <h3>Cloud Architecture</h3>
+                    <p>Designing highly available, fault-tolerant AWS architectures with multi-AZ deployments, auto-scaling, and disaster recovery built-in.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon"><i class="fas fa-code-branch"></i></div>
+                    <h3>CI/CD Automation</h3>
+                    <p>End-to-end pipeline automation using AWS CodePipeline, CodeBuild, and ECR — from git push to production in minutes.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Security First</h3>
+                    <p>Implementing zero-trust networking, WAF protection, private subnets, and IAM least-privilege access across all environments.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Observability</h3>
+                    <p>Full-stack monitoring with CloudWatch dashboards, SNS alerting, and automated remediation for proactive incident response.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills" id="skills">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Tech Stack</span>
+                <h2>Tools & <span class="gradient-text">Technologies</span></h2>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3><i class="fas fa-cloud"></i> Cloud & Infrastructure</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag aws">AWS ECS</span>
+                        <span class="skill-tag aws">AWS ECR</span>
+                        <span class="skill-tag aws">CloudFront</span>
+                        <span class="skill-tag aws">ALB</span>
+                        <span class="skill-tag aws">VPC</span>
+                        <span class="skill-tag aws">WAF</span>
+                        <span class="skill-tag aws">Route 53</span>
+                        <span class="skill-tag aws">CloudWatch</span>
+                        <span class="skill-tag aws">SNS</span>
+                        <span class="skill-tag aws">IAM</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3><i class="fas fa-cogs"></i> DevOps & Automation</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag devops">Terraform</span>
+                        <span class="skill-tag devops">Docker</span>
+                        <span class="skill-tag devops">Nginx</span>
+                        <span class="skill-tag devops">CodeBuild</span>
+                        <span class="skill-tag devops">CodePipeline</span>
+                        <span class="skill-tag devops">GitHub Actions</span>
+                        <span class="skill-tag devops">Bash</span>
+                        <span class="skill-tag devops">Python</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3><i class="fas fa-server"></i> Compute & Containers</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag compute">ECS Fargate</span>
+                        <span class="skill-tag compute">EC2</span>
+                        <span class="skill-tag compute">Auto Scaling</span>
+                        <span class="skill-tag compute">Lambda</span>
+                        <span class="skill-tag compute">Ubuntu</span>
+                        <span class="skill-tag compute">Kubernetes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="architecture" id="architecture">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Infrastructure</span>
+                <h2>Production <span class="gradient-text">Architecture</span></h2>
+                <p>Enterprise-grade AWS architecture with auto-scaling, security layers, and global CDN distribution</p>
+            </div>
+            <div class="arch-diagram">
+                <div class="arch-layer">
+                    <div class="arch-label">Users / Internet</div>
+                    <div class="arch-components">
+                        <div class="arch-box user-box">
+                            <i class="fas fa-users"></i>
+                            <span>End Users</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="arch-arrow"><i class="fas fa-arrow-down"></i></div>
+                <div class="arch-layer">
+                    <div class="arch-label">Security & CDN Layer</div>
+                    <div class="arch-components">
+                        <div class="arch-box waf-box">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>AWS WAF</span>
+                        </div>
+                        <div class="arch-box cdn-box">
+                            <i class="fas fa-globe"></i>
+                            <span>CloudFront CDN</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="arch-arrow"><i class="fas fa-arrow-down"></i></div>
+                <div class="arch-layer">
+                    <div class="arch-label">Load Balancing — Public Subnet</div>
+                    <div class="arch-components">
+                        <div class="arch-box alb-box">
+                            <i class="fas fa-balance-scale"></i>
+                            <span>ALB (Multi-AZ)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="arch-arrow"><i class="fas fa-arrow-down"></i></div>
+                <div class="arch-layer private-layer">
+                    <div class="arch-label">ECS Containers — Private Subnet</div>
+                    <div class="arch-components">
+                        <div class="arch-box ecs-box">
+                            <i class="fab fa-docker"></i>
+                            <span>ECS Task (Nginx)</span>
+                            <small>Min: 3 / Max: 6</small>
+                        </div>
+                        <div class="arch-box ecs-box">
+                            <i class="fab fa-docker"></i>
+                            <span>ECS Task (Nginx)</span>
+                            <small>Auto-Scaling @ 80%</small>
+                        </div>
+                        <div class="arch-box ecs-box">
+                            <i class="fab fa-docker"></i>
+                            <span>ECS Task (Nginx)</span>
+                            <small>CPU Monitored</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="arch-arrow"><i class="fas fa-arrow-down"></i></div>
+                <div class="arch-layer">
+                    <div class="arch-label">Egress & Monitoring</div>
+                    <div class="arch-components">
+                        <div class="arch-box nat-box">
+                            <i class="fas fa-network-wired"></i>
+                            <span>NAT Gateway</span>
+                        </div>
+                        <div class="arch-box cw-box">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>CloudWatch</span>
+                        </div>
+                        <div class="arch-box sns-box">
+                            <i class="fas fa-bell"></i>
+                            <span>SNS Alerts</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="arch-layer">
+                    <div class="arch-label">CI/CD Pipeline</div>
+                    <div class="arch-components">
+                        <div class="arch-box github-box">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </div>
+                        <div class="arch-box cb-box">
+                            <i class="fas fa-hammer"></i>
+                            <span>CodeBuild</span>
+                        </div>
+                        <div class="arch-box ecr-box">
+                            <i class="fas fa-box"></i>
+                            <span>ECR Registry</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Contact</span>
+                <h2>Let's <span class="gradient-text">Connect</span></h2>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Ready to build something amazing?</h3>
+                    <p>Whether you need a robust cloud architecture, CI/CD pipeline automation, or infrastructure-as-code implementation — let's talk.</p>
+                    <div class="contact-links">
+                        <a href="https://github.com/suyashkadam" class="contact-link">
+                            <i class="fab fa-github"></i>
+                            <span>github.com/suyashkadam</span>
+                        </a>
+                        <a href="mailto:yogiraj123ano@gmail.com" class="contact-link">
+                            <i class="fas fa-envelope"></i>
+                            <span>yogiraj123ano@gmail.com</span>
+                        </a>
+                        <a href="https://linkedin.com/in/suyashkadam" class="contact-link">
+                            <i class="fab fa-linkedin"></i>
+                            <span>linkedin.com/in/suyashkadam</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-bracket">&lt;</span>
+                    <span class="logo-text">SK</span>
+                    <span class="logo-bracket">/&gt;</span>
+                </div>
+                <p>Deployed on AWS ECS · Served via CloudFront · Protected by WAF</p>
+                <p class="footer-infra">
+                    <i class="fas fa-server"></i> ECS Fargate &nbsp;|&nbsp;
+                    <i class="fas fa-globe"></i> CloudFront &nbsp;|&nbsp;
+                    <i class="fas fa-shield-alt"></i> WAF &nbsp;|&nbsp;
+                    <i class="fas fa-lock"></i> Private VPC
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
