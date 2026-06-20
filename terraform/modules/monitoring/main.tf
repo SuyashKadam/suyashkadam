@@ -172,7 +172,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   period              = 60
   statistic           = "Average"
   threshold           = var.cpu_threshold
-  alarm_description   = "ECS CPU utilization exceeded ${var.cpu_threshold}% — auto-scaling triggered"
+  alarm_description   = "ECS CPU utilization exceeded ${var.cpu_threshold}% - auto-scaling triggered"
   treat_missing_data  = "notBreaching"
 
   dimensions = {

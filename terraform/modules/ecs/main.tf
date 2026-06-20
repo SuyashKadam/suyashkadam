@@ -5,7 +5,7 @@ locals {
 # ---------- ECS Security Group (private subnet) ----------
 resource "aws_security_group" "ecs_tasks" {
   name        = "${local.name_prefix}-ecs-tasks-sg"
-  description = "Security group for ECS tasks — only accepts traffic from ALB"
+  description = "Security group for ECS tasks - only accepts traffic from ALB"
   vpc_id      = var.vpc_id
 
   ingress {
