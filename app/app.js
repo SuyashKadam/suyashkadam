@@ -1,3 +1,10 @@
+// Live banner deploy time
+const deployTimeEl = document.getElementById('deploy-time');
+if (deployTimeEl) {
+  const now = new Date();
+  deployTimeEl.textContent = `Deployed ${now.toUTCString()}`;
+}
+
 // Navbar scroll effect
 const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => {
