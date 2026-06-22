@@ -76,20 +76,22 @@ resource "aws_iam_role_policy" "codebuild" {
         }
       },
       {
-        Sid    = "S3"
+        Sid    = "S3PipelineArtifacts"
         Effect = "Allow"
         Action = [
           "s3:GetObject",
+          "s3:GetObjectVersion",
           "s3:PutObject",
-          "s3:GetObjectVersion"
+          "s3:GetBucketAcl",
+          "s3:GetBucketLocation",
+          "s3:ListBucket"
         ]
-        Resource = "${aws_s3_bucket.artifacts.arn}/*"
-      },
-      {
-        Sid      = "S3List"
-        Effect   = "Allow"
-        Action   = ["s3:GetBucketAcl", "s3:GetBucketLocation"]
-        Resource = aws_s3_bucket.artifacts.arn
+        Resource = [
+          "arn:aws:s3:::${var.project_name}-${var.environment}-pipeline-artifacts-${data.aws_caller_identity.current.account_id}",
+          "arn:aws:s3:::${var.project_name}-${var.environment}-pipeline-artifacts-${data.aws_caller_identity.current.account_id}/*",
+          "${aws_s3_bucket.artifacts.arn}",
+          "${aws_s3_bucket.artifacts.arn}/*"
+        ]
       }
     ]
   })
