@@ -37,7 +37,7 @@ resource "aws_iam_role_policy" "codebuild" {
         Resource = "*"
       },
       {
-        Sid    = "ECR"
+        Sid    = "ECRPrivate"
         Effect = "Allow"
         Action = [
           "ecr:GetAuthorizationToken",
@@ -49,6 +49,15 @@ resource "aws_iam_role_policy" "codebuild" {
           "ecr:CompleteLayerUpload",
           "ecr:PutImage",
           "ecr:DescribeImages"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid    = "ECRPublic"
+        Effect = "Allow"
+        Action = [
+          "ecr-public:GetAuthorizationToken",
+          "sts:GetServiceBearerToken"
         ]
         Resource = "*"
       },
