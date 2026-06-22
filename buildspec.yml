@@ -4,24 +4,34 @@ phases:
   pre_build:
     commands:
       - echo "=== PRE_BUILD ==="
+      - echo "Working dir $(pwd)"
+      - echo "Src dir $CODEBUILD_SRC_DIR"
+      - ls -la
+      - ls -la app/ || echo "WARNING app/ folder not found at $(pwd)"
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-7)
       - IMAGE_TAG=$(if [ -n "$COMMIT_HASH" ]; then echo "$COMMIT_HASH"; else echo "latest"; fi)
       - IMAGE_URI="$ECR_REPOSITORY_URL:$IMAGE_TAG"
       - IMAGE_LATEST="$ECR_REPOSITORY_URL:latest"
+      - echo "IMAGE_URI=$IMAGE_URI"
+      - echo "IMAGE_LATEST=$IMAGE_LATEST"
       - echo "export IMAGE_TAG=$IMAGE_TAG" > /tmp/env.sh
       - echo "export IMAGE_URI=$IMAGE_URI" >> /tmp/env.sh
       - echo "export IMAGE_LATEST=$IMAGE_LATEST" >> /tmp/env.sh
+      - echo "export APP_DIR=$(pwd)/app" >> /tmp/env.sh
       - cat /tmp/env.sh
-      - echo "ECR login done. Tag=$IMAGE_TAG"
 
   build:
     commands:
       - echo "=== BUILD ==="
       - . /tmp/env.sh
-      - echo "Building image $IMAGE_URI"
-      - docker build --no-cache -t "$IMAGE_URI" -t "$IMAGE_LATEST" "$CODEBUILD_SRC_DIR/app"
-      - echo "Docker build complete"
+      - echo "IMAGE_URI=$IMAGE_URI"
+      - echo "APP_DIR=$APP_DIR"
+      - ls -la $APP_DIR
+      - echo "--- Dockerfile contents ---"
+      - cat $APP_DIR/Dockerfile
+      - echo "--- Running docker build ---"
+      - docker build --no-cache --progress=plain -t "$IMAGE_URI" -t "$IMAGE_LATEST" "$APP_DIR"
 
   post_build:
     commands:
@@ -29,17 +39,11 @@ phases:
       - . /tmp/env.sh
       - docker push "$IMAGE_URI"
       - docker push "$IMAGE_LATEST"
-      - echo "Pushed $IMAGE_URI"
-      - printf '[{"name":"%s","imageUri":"%s"}]\n' "$CONTAINER_NAME" "$IMAGE_URI" > "$CODEBUILD_SRC_DIR/imagedefinitions.json"
-      - cat "$CODEBUILD_SRC_DIR/imagedefinitions.json"
-      - echo "Build done. Pipeline will now wait for manual approval."
+      - echo "[{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URI\"}]" > imagedefinitions.json
+      - cat imagedefinitions.json
+      - echo "Done."
 
 artifacts:
-  base-directory: $CODEBUILD_SRC_DIR
   files:
     - imagedefinitions.json
   discard-paths: yes
-
-cache:
-  paths:
-    - /root/.docker/**/*
