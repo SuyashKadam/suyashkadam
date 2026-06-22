@@ -143,7 +143,7 @@ resource "aws_codebuild_project" "app" {
   build_timeout = 20
 
   artifacts {
-    type = "NO_ARTIFACTS"
+    type = "CODEPIPELINE"
   }
 
   environment {
@@ -184,14 +184,8 @@ resource "aws_codebuild_project" "app" {
   }
 
   source {
-    type            = "GITHUB"
-    location        = "https://github.com/${var.github_repo}.git"
-    git_clone_depth = 1
-    buildspec       = "buildspec.yml"
-
-    git_submodules_config {
-      fetch_submodules = false
-    }
+    type      = "CODEPIPELINE"
+    buildspec = "buildspec.yml"
   }
 
   logs_config {
@@ -208,19 +202,3 @@ resource "aws_codebuild_project" "app" {
   }
 }
 
-# ---------- GitHub Webhook ----------
-resource "aws_codebuild_webhook" "github" {
-  project_name = aws_codebuild_project.app.name
-  build_type   = "BUILD"
-
-  filter_group {
-    filter {
-      type    = "EVENT"
-      pattern = "PUSH"
-    }
-    filter {
-      type    = "HEAD_REF"
-      pattern = "^refs/heads/master$"
-    }
-  }
-}

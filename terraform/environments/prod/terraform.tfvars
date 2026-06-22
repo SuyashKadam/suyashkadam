@@ -2,7 +2,8 @@ aws_region   = "us-east-1"
 project_name = "suyashkadam"
 environment  = "prod"
 alert_email  = "yogiraj123ano@gmail.com"
-github_repo  = "suyashkadam/suyashkadam"
+github_repo   = "suyashkadam/suyashkadam"
+github_branch = "master"
 
 # VPC
 vpc_cidr             = "10.0.0.0/16"
