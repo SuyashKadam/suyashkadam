@@ -37,8 +37,9 @@
     <div class="live-banner">
         <div class="live-banner-inner">
             <span class="live-dot"></span>
-            <strong>LIVE ON AWS</strong>
-            &nbsp;·&nbsp; ECS Fargate &nbsp;·&nbsp; CloudFront CDN &nbsp;·&nbsp; WAF Protected &nbsp;·&nbsp; Auto-Scaling (3-6 containers) &nbsp;·&nbsp; CI/CD Pipeline v2.0 DEPLOYED
+            <strong>DEPLOYED via AWS CodePipeline</strong>
+            &nbsp;·&nbsp; Source &rarr; Build &rarr; Approve &rarr; Deploy
+            &nbsp;·&nbsp; ECS Fargate &nbsp;·&nbsp; CloudFront &nbsp;·&nbsp; WAF
             &nbsp;·&nbsp; <span id="deploy-time"></span>
         </div>
     </div>
@@ -52,7 +53,7 @@
         <div class="hero-content">
             <div class="hero-badge">
                 <i class="fas fa-circle pulse-green"></i>
-                Available for opportunities
+                Pipeline Deployed &mdash; Version 3.0
             </div>
             <h1 class="hero-title">
                 This is <span class="gradient-text">Suyash's AWS Architecture</span>
@@ -61,26 +62,35 @@
                 <span class="typed-text" id="typed"></span><span class="cursor">|</span>
             </h2>
             <p class="hero-description">
-                Building scalable, resilient cloud infrastructure with modern DevOps practices.
-                Automating everything from code to production with zero downtime deployments.
+                This page was automatically built and deployed via <strong>AWS CodePipeline</strong>.
+                Every git push triggers: Source &rarr; CodeBuild &rarr; Manual Approval &rarr; ECS Rolling Deploy.
             </p>
             <div class="hero-stats">
                 <div class="stat">
-                    <span class="stat-number">99.9%</span>
-                    <span class="stat-label">Uptime SLA</span>
+                    <span class="stat-number">4</span>
+                    <span class="stat-label">Pipeline Stages</span>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat">
-                    <span class="stat-number">50%</span>
-                    <span class="stat-label">Cost Reduction</span>
+                    <span class="stat-number">3-6</span>
+                    <span class="stat-label">ECS Containers</span>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat">
-                    <span class="stat-number">&lt;5min</span>
-                    <span class="stat-label">Deploy Time</span>
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Downtime</span>
                 </div>
             </div>
-            <div class="hero-buttons">
+            <div class="pipeline-stages">
+                <div class="stage stage-done"><i class="fab fa-github"></i><span>Source</span></div>
+                <div class="stage-arrow">&rarr;</div>
+                <div class="stage stage-done"><i class="fas fa-hammer"></i><span>Build</span></div>
+                <div class="stage-arrow">&rarr;</div>
+                <div class="stage stage-done"><i class="fas fa-check-circle"></i><span>Approve</span></div>
+                <div class="stage-arrow">&rarr;</div>
+                <div class="stage stage-done"><i class="fas fa-rocket"></i><span>Deploy</span></div>
+            </div>
+            <div class="hero-buttons" style="margin-top:28px;">
                 <a href="#architecture" class="btn-primary">
                     <i class="fas fa-server"></i> View Architecture
                 </a>
@@ -95,19 +105,22 @@
                     <span class="dot red"></span>
                     <span class="dot yellow"></span>
                     <span class="dot green"></span>
-                    <span class="terminal-title">pipeline.sh</span>
+                    <span class="terminal-title">codepipeline — live output</span>
                 </div>
                 <div class="terminal-body" id="terminal-body">
-                    <div class="term-line"><span class="prompt">$</span> <span class="cmd">terraform init</span></div>
-                    <div class="term-line success">✓ Terraform initialized successfully</div>
-                    <div class="term-line"><span class="prompt">$</span> <span class="cmd">terraform plan -out=tfplan</span></div>
-                    <div class="term-line info">Plan: 47 to add, 0 to change, 0 to destroy.</div>
-                    <div class="term-line"><span class="prompt">$</span> <span class="cmd">terraform apply tfplan</span></div>
-                    <div class="term-line success">✓ ECS Cluster created</div>
-                    <div class="term-line success">✓ ALB provisioned</div>
-                    <div class="term-line success">✓ CloudFront distribution active</div>
-                    <div class="term-line success">✓ WAF rules applied</div>
-                    <div class="term-line highlight">Apply complete! 47 resources added.</div>
+                    <div class="term-line info">[Source]  GitHub webhook triggered</div>
+                    <div class="term-line success">&#10003; Source artifact downloaded</div>
+                    <div class="term-line info">[Build]   CodeBuild started</div>
+                    <div class="term-line success">&#10003; ECR login successful</div>
+                    <div class="term-line success">&#10003; docker build ./app complete</div>
+                    <div class="term-line success">&#10003; Image pushed to ECR</div>
+                    <div class="term-line success">&#10003; imagedefinitions.json written</div>
+                    <div class="term-line info">[Approve] Email sent to approver</div>
+                    <div class="term-line highlight">&#10003; Manual approval granted</div>
+                    <div class="term-line info">[Deploy]  ECS rolling deploy started</div>
+                    <div class="term-line success">&#10003; New tasks healthy (3/3)</div>
+                    <div class="term-line success">&#10003; Old tasks drained</div>
+                    <div class="term-line highlight">PIPELINE SUCCEEDED &#10003;</div>
                     <div class="term-line"><span class="prompt">$</span> <span class="cmd blink">_</span></div>
                 </div>
             </div>
