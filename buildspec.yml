@@ -1,41 +1,32 @@
 version: 0.2
 
-env:
-  variables:
-    DOCKER_BUILDKIT: "1"
-
 phases:
   pre_build:
     commands:
-      - echo "=== PRE_BUILD: Logging in to Amazon ECR ==="
+      - echo "PRE_BUILD - Logging in to Amazon ECR"
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-7)
-      - IMAGE_TAG="${COMMIT_HASH:-latest}"
-      - IMAGE_URI="$ECR_REPOSITORY_URL:$IMAGE_TAG"
-      - IMAGE_LATEST="$ECR_REPOSITORY_URL:latest"
-      - echo "Image will be tagged as $IMAGE_TAG"
+      - IMAGE_TAG=$(if [ -n "$COMMIT_HASH" ]; then echo $COMMIT_HASH; else echo latest; fi)
+      - IMAGE_URI=$ECR_REPOSITORY_URL:$IMAGE_TAG
+      - IMAGE_LATEST=$ECR_REPOSITORY_URL:latest
+      - echo "Image tag is $IMAGE_TAG"
 
   build:
     commands:
-      - echo "=== BUILD: Building Docker image ==="
-      - cd app
-      - docker build --no-cache -t $IMAGE_URI -t $IMAGE_LATEST .
+      - echo "BUILD - Building Docker image"
+      - docker build --no-cache -t $IMAGE_URI -t $IMAGE_LATEST ./app/
       - echo "Build complete"
 
   post_build:
     commands:
-      - echo "=== POST_BUILD: Pushing image to ECR ==="
+      - echo "POST_BUILD - Pushing image to ECR"
       - docker push $IMAGE_URI
       - docker push $IMAGE_LATEST
-      - echo "Push complete"
-      - echo "=== Writing imagedefinitions.json for CodePipeline Deploy stage ==="
-      - cd ..
-      - printf '[{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAME" "$IMAGE_URI" > imagedefinitions.json
+      - echo "Push complete - writing imagedefinitions.json"
+      - echo "[{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URI\"}]" > imagedefinitions.json
       - cat imagedefinitions.json
-      - echo "=== Build complete. Awaiting manual approval before ECS deploy ==="
+      - echo "Done. Awaiting manual approval in CodePipeline before ECS deploy."
 
-# CodePipeline picks up imagedefinitions.json from this artifact
-# and uses it in the Deploy stage to update ECS
 artifacts:
   files:
     - imagedefinitions.json
@@ -43,4 +34,4 @@ artifacts:
 
 cache:
   paths:
-    - '/root/.docker/**/*'
+    - /root/.docker/**/*
