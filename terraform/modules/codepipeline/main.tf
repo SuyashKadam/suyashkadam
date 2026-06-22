@@ -112,23 +112,28 @@ resource "aws_iam_role_policy" "pipeline" {
           "ecs:DescribeTasks",
           "ecs:ListTasks",
           "ecs:RegisterTaskDefinition",
-          "ecs:UpdateService"
+          "ecs:UpdateService",
+          "ecs:CreateService",
+          "ecs:DeleteService",
+          "ecs:ListServices",
+          "ecs:TagResource"
         ]
         Resource = "*"
       },
       {
-        Sid      = "IAMPassRole"
-        Effect   = "Allow"
-        Action   = ["iam:PassRole"]
+        Sid    = "IAMPassRole"
+        Effect = "Allow"
+        Action = ["iam:PassRole"]
         Resource = "*"
-        Condition = {
-          StringEqualsIfExists = {
-            "iam:PassedToService" = [
-              "ecs-tasks.amazonaws.com",
-              "ecs.amazonaws.com"
-            ]
-          }
-        }
+      },
+      {
+        Sid    = "ECR"
+        Effect = "Allow"
+        Action = [
+          "ecr:DescribeImages",
+          "ecr:GetAuthorizationToken"
+        ]
+        Resource = "*"
       },
       {
         Sid    = "SNSApproval"
