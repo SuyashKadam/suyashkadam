@@ -4,46 +4,44 @@ phases:
   pre_build:
     commands:
       - echo "=== PRE_BUILD ==="
-      - echo "Working dir $(pwd)"
-      - echo "Src dir $CODEBUILD_SRC_DIR"
-      - ls -la
-      - ls -la app/ || echo "WARNING app/ folder not found at $(pwd)"
+      - echo "Logging in to ECR Private"
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo "Logging in to ECR Public (avoids Docker Hub rate limits)"
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-7)
       - IMAGE_TAG=$(if [ -n "$COMMIT_HASH" ]; then echo "$COMMIT_HASH"; else echo "latest"; fi)
-      - IMAGE_URI="$ECR_REPOSITORY_URL:$IMAGE_TAG"
-      - IMAGE_LATEST="$ECR_REPOSITORY_URL:latest"
-      - echo "IMAGE_URI=$IMAGE_URI"
-      - echo "IMAGE_LATEST=$IMAGE_LATEST"
+      - IMAGE_URI=$ECR_REPOSITORY_URL:$IMAGE_TAG
+      - IMAGE_LATEST=$ECR_REPOSITORY_URL:latest
       - echo "export IMAGE_TAG=$IMAGE_TAG" > /tmp/env.sh
       - echo "export IMAGE_URI=$IMAGE_URI" >> /tmp/env.sh
       - echo "export IMAGE_LATEST=$IMAGE_LATEST" >> /tmp/env.sh
-      - echo "export APP_DIR=$(pwd)/app" >> /tmp/env.sh
       - cat /tmp/env.sh
+      - echo "Tag is $IMAGE_TAG"
 
   build:
     commands:
       - echo "=== BUILD ==="
       - . /tmp/env.sh
-      - echo "IMAGE_URI=$IMAGE_URI"
-      - echo "APP_DIR=$APP_DIR"
-      - ls -la $APP_DIR
-      - echo "--- Dockerfile contents ---"
-      - cat $APP_DIR/Dockerfile
-      - echo "--- Running docker build ---"
-      - docker build --no-cache --progress=plain -t "$IMAGE_URI" -t "$IMAGE_LATEST" "$APP_DIR"
+      - echo "Building $IMAGE_URI"
+      - docker build --no-cache -t $IMAGE_URI -t $IMAGE_LATEST $CODEBUILD_SRC_DIR/app
+      - echo "Build complete"
 
   post_build:
     commands:
       - echo "=== POST_BUILD ==="
       - . /tmp/env.sh
-      - docker push "$IMAGE_URI"
-      - docker push "$IMAGE_LATEST"
+      - docker push $IMAGE_URI
+      - docker push $IMAGE_LATEST
+      - echo "Pushed $IMAGE_URI"
       - echo "[{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URI\"}]" > imagedefinitions.json
       - cat imagedefinitions.json
-      - echo "Done."
+      - echo "Done. Waiting for manual approval before ECS deploy."
 
 artifacts:
   files:
     - imagedefinitions.json
   discard-paths: yes
+
+cache:
+  paths:
+    - /root/.docker/**/*
