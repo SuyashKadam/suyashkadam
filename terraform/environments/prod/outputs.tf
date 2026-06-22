@@ -24,8 +24,23 @@ output "ecs_service_name" {
 }
 
 output "codebuild_project_name" {
-  description = "CodeBuild project name — trigger this to deploy"
+  description = "CodeBuild project name"
   value       = module.codebuild.project_name
+}
+
+output "codepipeline_name" {
+  description = "CodePipeline name — view this in AWS Console to see all stages"
+  value       = module.codepipeline.pipeline_name
+}
+
+output "codestar_connection_arn" {
+  description = "IMPORTANT: Authorize this connection in AWS Console before first pipeline run"
+  value       = module.codepipeline.codestar_connection_arn
+}
+
+output "pipeline_console_url" {
+  description = "Direct link to the pipeline in AWS Console"
+  value       = "https://console.aws.amazon.com/codesuite/codepipeline/pipelines/suyashkadam-prod-pipeline/view?region=us-east-1"
 }
 
 output "sns_topic_arn" {

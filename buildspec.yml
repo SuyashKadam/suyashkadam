@@ -7,70 +7,39 @@ env:
 phases:
   pre_build:
     commands:
-      - echo "=== Pre-build: Authenticating to ECR ==="
+      - echo "=== PRE_BUILD: Logging in to Amazon ECR ==="
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-7)
       - IMAGE_TAG="${COMMIT_HASH:-latest}"
       - IMAGE_URI="$ECR_REPOSITORY_URL:$IMAGE_TAG"
       - IMAGE_LATEST="$ECR_REPOSITORY_URL:latest"
-      - echo "Building image $IMAGE_URI"
+      - echo "Image will be tagged as $IMAGE_TAG"
 
   build:
     commands:
-      - echo "=== Build: Building Docker image ==="
+      - echo "=== BUILD: Building Docker image ==="
       - cd app
       - docker build --no-cache -t $IMAGE_URI -t $IMAGE_LATEST .
-      - echo "Image build complete"
+      - echo "Build complete"
 
   post_build:
     commands:
-      - echo "=== Post-build: Pushing image to ECR ==="
+      - echo "=== POST_BUILD: Pushing image to ECR ==="
       - docker push $IMAGE_URI
       - docker push $IMAGE_LATEST
-      - echo "=== Updating ECS service ==="
-      - |
-        # Get current task definition
-        TASK_DEF=$(aws ecs describe-task-definition \
-          --task-definition ${ECS_CLUSTER_NAME%%-*}-${ECS_CLUSTER_NAME##*-}-task \
-          --query 'taskDefinition' \
-          --output json 2>/dev/null || \
-          aws ecs list-task-definitions \
-            --family-prefix $(echo $ECS_SERVICE_NAME | sed 's/-service//') \
-            --sort DESC \
-            --query 'taskDefinitionArns[0]' \
-            --output text | xargs -I{} aws ecs describe-task-definition \
-              --task-definition {} --query 'taskDefinition' --output json)
-      - |
-        # Register new task definition with updated image
-        NEW_TASK_DEF=$(echo $TASK_DEF | python3 -c "
-        import json, sys
-        td = json.load(sys.stdin)
-        for c in td['containerDefinitions']:
-            if c['name'] == '$CONTAINER_NAME':
-                c['image'] = '$IMAGE_URI'
-        keys = ['family','containerDefinitions','requiresCompatibilities','networkMode',
-                'cpu','memory','executionRoleArn','taskRoleArn']
-        clean = {k: td[k] for k in keys if k in td}
-        print(json.dumps(clean))
-        ")
-      - NEW_TASK_ARN=$(aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEF" --query 'taskDefinition.taskDefinitionArn' --output text)
-      - echo "New task definition: $NEW_TASK_ARN"
-      - |
-        # Update ECS service with new task definition
-        aws ecs update-service \
-          --cluster $ECS_CLUSTER_NAME \
-          --service $ECS_SERVICE_NAME \
-          --task-definition $NEW_TASK_ARN \
-          --force-new-deployment
-      - echo "=== Waiting for service to stabilize ==="
-      - aws ecs wait services-stable --cluster $ECS_CLUSTER_NAME --services $ECS_SERVICE_NAME
-      - echo "=== Deployment complete! ==="
-      - echo "Image deployed: $IMAGE_URI"
+      - echo "Push complete"
+      - echo "=== Writing imagedefinitions.json for CodePipeline Deploy stage ==="
+      - cd ..
+      - printf '[{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAME" "$IMAGE_URI" > imagedefinitions.json
+      - cat imagedefinitions.json
+      - echo "=== Build complete. Awaiting manual approval before ECS deploy ==="
 
+# CodePipeline picks up imagedefinitions.json from this artifact
+# and uses it in the Deploy stage to update ECS
 artifacts:
   files:
-    - "**/*"
-  discard-paths: no
+    - imagedefinitions.json
+  discard-paths: yes
 
 cache:
   paths:

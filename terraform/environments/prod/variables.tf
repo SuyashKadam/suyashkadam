@@ -93,3 +93,9 @@ variable "github_repo" {
   type        = string
   default     = "suyashkadam/suyashkadam"
 }
+
+variable "github_branch" {
+  description = "GitHub branch to trigger the pipeline"
+  type        = string
+  default     = "master"
+}
