@@ -3,38 +3,39 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo "PRE_BUILD - Logging in to Amazon ECR"
+      - echo "=== PRE_BUILD ==="
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-7)
-      - IMAGE_TAG=$(if [ -n "$COMMIT_HASH" ]; then echo $COMMIT_HASH; else echo latest; fi)
-      - IMAGE_URI=$ECR_REPOSITORY_URL:$IMAGE_TAG
-      - IMAGE_LATEST=$ECR_REPOSITORY_URL:latest
-      - echo "export IMAGE_TAG=$IMAGE_TAG" > /tmp/build_env.sh
-      - echo "export IMAGE_URI=$IMAGE_URI" >> /tmp/build_env.sh
-      - echo "export IMAGE_LATEST=$IMAGE_LATEST" >> /tmp/build_env.sh
-      - cat /tmp/build_env.sh
-      - echo "Image tag is $IMAGE_TAG"
+      - IMAGE_TAG=$(if [ -n "$COMMIT_HASH" ]; then echo "$COMMIT_HASH"; else echo "latest"; fi)
+      - IMAGE_URI="$ECR_REPOSITORY_URL:$IMAGE_TAG"
+      - IMAGE_LATEST="$ECR_REPOSITORY_URL:latest"
+      - echo "export IMAGE_TAG=$IMAGE_TAG" > /tmp/env.sh
+      - echo "export IMAGE_URI=$IMAGE_URI" >> /tmp/env.sh
+      - echo "export IMAGE_LATEST=$IMAGE_LATEST" >> /tmp/env.sh
+      - cat /tmp/env.sh
+      - echo "ECR login done. Tag=$IMAGE_TAG"
 
   build:
     commands:
-      - echo "BUILD - Building Docker image"
-      - source /tmp/build_env.sh
-      - echo "Building $IMAGE_URI"
-      - docker build --no-cache -t $IMAGE_URI -t $IMAGE_LATEST ./app/
-      - echo "Build complete"
+      - echo "=== BUILD ==="
+      - . /tmp/env.sh
+      - echo "Building image $IMAGE_URI"
+      - docker build --no-cache -t "$IMAGE_URI" -t "$IMAGE_LATEST" "$CODEBUILD_SRC_DIR/app"
+      - echo "Docker build complete"
 
   post_build:
     commands:
-      - source /tmp/build_env.sh
-      - echo "POST_BUILD - Pushing image to ECR"
-      - docker push $IMAGE_URI
-      - docker push $IMAGE_LATEST
-      - echo "Push complete - writing imagedefinitions.json"
-      - echo "[{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URI\"}]" > imagedefinitions.json
-      - cat imagedefinitions.json
-      - echo "Done. Awaiting manual approval in CodePipeline before ECS deploy."
+      - echo "=== POST_BUILD ==="
+      - . /tmp/env.sh
+      - docker push "$IMAGE_URI"
+      - docker push "$IMAGE_LATEST"
+      - echo "Pushed $IMAGE_URI"
+      - printf '[{"name":"%s","imageUri":"%s"}]\n' "$CONTAINER_NAME" "$IMAGE_URI" > "$CODEBUILD_SRC_DIR/imagedefinitions.json"
+      - cat "$CODEBUILD_SRC_DIR/imagedefinitions.json"
+      - echo "Build done. Pipeline will now wait for manual approval."
 
 artifacts:
+  base-directory: $CODEBUILD_SRC_DIR
   files:
     - imagedefinitions.json
   discard-paths: yes
