@@ -1,0 +1,26 @@
+# Provider binaries and plugins
+.terraform/
+
+# State files — should never be local in production
+*.tfstate
+*.tfstate.backup
+
+# Saved plan files may contain secrets
+*.tfplan
+tfplan
+
+# Auto-generated override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Crash log
+crash.log
+crash.*.log
+
+# Sensitive variable files — never commit these
+*.tfvars.secret
+
+# .terraform.lock.hcl SHOULD be committed (pins provider versions)
+# Do NOT add it here
