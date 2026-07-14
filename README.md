@@ -19,7 +19,7 @@ Production-grade AWS infrastructure for a containerized web application, built e
 
 Containers scale out at **80% CPU or Memory** (min 3 → max 6), with email alerts via SNS.
 
-## Deployment
+### Deployment
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for full step-by-step instructions.
 
